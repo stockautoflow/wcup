@@ -1,0 +1,98 @@
+:root {
+    --bg-main: #f1f5f9;
+    --panel-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --r-s: #ec4899;
+    --r-a: #ef4444;
+    --r-b: #f97316;
+    --r-c: #f59e0b;
+    --r-d: #10b981;
+    --r-e: #3b82f6;
+    --r-f: #8b5cf6;
+    --r-g: #64748b;
+    --r-none: #e2e8f0;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    margin: 0;
+    padding: 12px;
+    -webkit-text-size-adjust: 100%;
+}
+
+.container { max-width: 800px; margin: 0 auto; }
+h1 { text-align: center; color: #0f2c59; font-size: 1.3rem; margin: 15px 0; font-weight: 800; }
+
+/* タブ */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
+.tab-btn { flex: 1; min-width: 130px; padding: 10px 4px; font-size: 0.9rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; background-color: #cbd5e1; color: #334155; transition: all 0.2s; text-align: center; white-space: nowrap; }
+.team-panel { display: none; }
+.team-panel.active { display: block; }
+
+/* ポジショングループ */
+.pos-group { margin-bottom: 12px; }
+.pos-header { background-color: #e2e8f0; padding: 8px 12px; border-radius: 6px; font-weight: 800; color: #334155; cursor: pointer; display: flex; align-items: center; margin-bottom: 8px; user-select: none; transition: background-color 0.2s; }
+.pos-header:hover { background-color: #cbd5e1; }
+.pos-count { font-size: 0.8rem; color: #64748b; margin-left: 8px; font-weight: 600; }
+.pos-arrow { margin-left: auto; font-size: 0.7rem; transition: transform 0.2s; }
+.pos-group.closed .pos-arrow { transform: rotate(-90deg); }
+.pos-group.closed .pos-list { display: none; }
+
+/* 選手行 */
+.player-row { background: var(--panel-bg); border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; border-left: 5px solid #cbd5e1; }
+.player-trigger { display: flex; align-items: center; justify-content: space-between; padding: 12px 10px; cursor: pointer; user-select: none; gap: 8px; }
+.player-main-info { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+.player-name { font-size: 0.95rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-sub-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; display: flex; flex-wrap: wrap; gap: 0 6px; line-height: 1.4; }
+.meta-club { font-weight: 600; color: #475569; display: inline-block; }
+.meta-specs { white-space: nowrap; display: inline-block; }
+
+/* 概要バッジ */
+.summary-mini-grid { display: flex; gap: 5px; flex-shrink: 0; }
+.summary-col { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.summary-label { font-size: 0.6rem; font-weight: 700; color: #64748b; line-height: 1; }
+.summary-badge { width: 24px; height: 24px; border-radius: 6px; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 900; }
+.rank-S { background-color: var(--r-s); }
+.rank-A { background-color: var(--r-a); }
+.rank-B { background-color: var(--r-b); }
+.rank-C { background-color: var(--r-c); }
+.rank-D { background-color: var(--r-d); }
+.rank-E { background-color: var(--r-e); }
+.rank-F { background-color: var(--r-f); }
+.rank-G { background-color: var(--r-g); }
+.rank-none { background-color: var(--r-none); color: #94a3b8 !important; }
+.arrow-icon { font-size: 0.65rem; color: #94a3b8; transition: transform 0.2s; flex-shrink: 0; text-align: center; width: 12px; margin-left: 4px; }
+.player-row.open .arrow-icon { transform: rotate(180deg); }
+
+/* 詳細パネル */
+.rank-badge { display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; color: #ffffff; font-weight: 900; border-radius: 4px; font-size: 0.75rem; }
+.player-detail-panel { display: none; padding: 12px 10px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+.player-row.open .player-detail-panel { display: block; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+@media (max-width: 480px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .player-trigger { padding: 10px 4px; gap: 4px; }
+    .summary-mini-grid { gap: 3px; }
+    .summary-badge { width: 20px; height: 20px; font-size: 0.75rem; border-radius: 4px; }
+    .summary-label { font-size: 0.55rem; }
+    .player-name { font-size: 0.9rem; }
+    .meta-club { width: 100%; margin-bottom: 1px; } 
+}
+
+.detail-group { background: #ffffff; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; }
+.group-title { font-size: 0.75rem; font-weight: 800; margin-bottom: 6px; padding-bottom: 2px; border-bottom: 2px solid #cbd5e1; }
+.gt-atk { color: #991b1b; border-bottom-color: #fca5a5; }
+.gt-def { color: #1e40af; border-bottom-color: #93c5fd; }
+.gt-spd { color: #d97706; border-bottom-color: #fde68a; }
+.gt-tec { color: #713f12; border-bottom-color: #fed7aa; }
+.gt-itl { color: #3730a3; border-bottom-color: #c7d2fe; }
+.gt-phy { color: #166534; border-bottom-color: #bbf7d0; }
+.detail-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; padding: 5px 0; border-bottom: 1px dashed #f1f5f9; }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { color: #475569; }
