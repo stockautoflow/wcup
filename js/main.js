@@ -50,6 +50,14 @@ const scoutingData = [jpnData, nldData, tunData, sweData];
 let currentLang = 'ja';
 let activeTeamId = 'jpn';
 
+// ★追加：データが古い形式（文字列）のままでもエラーにならないようにする保護関数
+function t(value) {
+    if (!value) return '';
+    // もしデータが { ja: "三笘", en: "Mitoma" } ではなく、単なる "三笘" だった場合はそのまま返す
+    if (typeof value === 'string') return value; 
+    return value[currentLang] || value['ja'] || '';
+}
+
 // 平均ランクの計算（「-」は計算から除外）
 function calculateAvgRank(ranksArray) {
     const rankScores = { 'S':8, 'A':7, 'B':6, 'C':5, 'D':4, 'E':3, 'F':2, 'G':1 };
@@ -90,7 +98,7 @@ function renderBoard() {
         // -------------------------
         const btn = document.createElement('button');
         btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
-        btn.textContent = team.name[currentLang];
+        btn.textContent = t(team.name); // ★保護関数を使用
         
         if (team.id === activeTeamId) {
             btn.style.backgroundColor = team.color;
@@ -151,10 +159,10 @@ function renderBoard() {
                     <div class="player-trigger" onclick="this.parentElement.classList.toggle('open')">
                         <div class="player-main-info">
                             <div class="player-name-line">
-                                <span class="player-name">#${player.no} ${player.name[currentLang]}</span>
+                                <span class="player-name">#${player.no} ${t(player.name)}</span>
                             </div>
                             <div class="player-sub-meta">
-                                <span class="meta-club">${player.club[currentLang]}</span>
+                                <span class="meta-club">${t(player.club)}</span>
                                 <span class="meta-specs">${player.age}${i18n.age[currentLang]} / ${player.height}cm / ${player.weight}kg / ${player.pos}</span>
                             </div>
                         </div>
@@ -210,22 +218,29 @@ function renderBoard() {
 // -------------------------
 // イベントリスナーの登録
 // -------------------------
+// DOMの読み込みが完了してから確実にボタンにイベントを付与する
+document.addEventListener('DOMContentLoaded', () => {
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
 
-// 日本語ボタン
-document.getElementById('btn-ja').addEventListener('click', () => {
-    currentLang = 'ja';
-    document.getElementById('btn-ja').classList.add('active');
-    document.getElementById('btn-en').classList.remove('active');
+    if (btnJa && btnEn) {
+        // 日本語ボタン
+        btnJa.addEventListener('click', () => {
+            currentLang = 'ja';
+            btnJa.classList.add('active');
+            btnEn.classList.remove('active');
+            renderBoard();
+        });
+
+        // 英語ボタン
+        btnEn.addEventListener('click', () => {
+            currentLang = 'en';
+            btnEn.classList.add('active');
+            btnJa.classList.remove('active');
+            renderBoard();
+        });
+    }
+
+    // 初期描画
     renderBoard();
 });
-
-// 英語ボタン
-document.getElementById('btn-en').addEventListener('click', () => {
-    currentLang = 'en';
-    document.getElementById('btn-en').classList.add('active');
-    document.getElementById('btn-ja').classList.remove('active');
-    renderBoard();
-});
-
-// 初期描画
-document.addEventListener('DOMContentLoaded', renderBoard);
