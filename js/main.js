@@ -3,7 +3,7 @@ import { nldData } from './data/nld.js';
 import { tunData } from './data/tun.js';
 import { sweData } from './data/swe.js';
 
-// 多言語辞書
+// 多言語辞書 (i18n)
 const i18n = {
     title: { ja: "W杯2026 スカウティングダッシュボード", en: "World Cup 2026 Scouting Dashboard" },
     age: { ja: "歳", en: "yo" },
@@ -43,37 +43,55 @@ const i18n = {
     }
 };
 
+// データの結合
 const scoutingData = [jpnData, nldData, tunData, sweData];
+
+// 状態管理
 let currentLang = 'ja';
 let activeTeamId = 'jpn';
 
+// 平均ランクの計算（「-」は計算から除外）
 function calculateAvgRank(ranksArray) {
     const rankScores = { 'S':8, 'A':7, 'B':6, 'C':5, 'D':4, 'E':3, 'F':2, 'G':1 };
     let sum = 0, count = 0;
+    
     ranksArray.forEach(r => {
-        if (r !== '-') { sum += (rankScores[r] || 1); count++; }
+        if (r !== '-') { 
+            sum += (rankScores[r] || 1); 
+            count++; 
+        }
     });
+    
     if (count === 0) return '-';
+    
     const avg = Math.round(sum / count);
     const reverseScores = { 8:'S', 7:'A', 6:'B', 5:'C', 4:'D', 3:'E', 2:'F', 1:'G' };
     return reverseScores[avg] || 'G';
 }
 
+// 画面の描画ロジック
 function renderBoard() {
+    // タイトルの言語切り替え
     document.getElementById('main-title').textContent = i18n.title[currentLang];
     
     const tabsContainer = document.getElementById('tabs-container');
     const panelsContainer = document.getElementById('panels-container');
+    
+    // 再描画のために中身をクリア
     tabsContainer.innerHTML = '';
     panelsContainer.innerHTML = '';
 
+    // ポジションの表示順序
     const posOrder = ['FW', 'MF', 'DF', 'GK'];
 
     scoutingData.forEach(team => {
-        // タブ生成
+        // -------------------------
+        // 1. タブの生成
+        // -------------------------
         const btn = document.createElement('button');
         btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
         btn.textContent = team.name[currentLang];
+        
         if (team.id === activeTeamId) {
             btn.style.backgroundColor = team.color;
             btn.style.color = 'white';
@@ -81,22 +99,26 @@ function renderBoard() {
         
         btn.addEventListener('click', () => {
             activeTeamId = team.id;
-            renderBoard(); // タブ切り替え時も再描画して状態を反映
+            renderBoard(); // タブ切り替え時に再描画
         });
         tabsContainer.appendChild(btn);
 
-        // パネル生成
+        // -------------------------
+        // 2. パネルの生成
+        // -------------------------
         const panel = document.createElement('div');
         panel.id = `panel-${team.id}`;
         panel.className = `team-panel ${team.id === activeTeamId ? 'active' : ''}`;
 
+        // 選手をポジションごとに分類
         const groupedPlayers = { FW: [], MF: [], DF: [], GK: [] };
         team.players.forEach(player => {
-            const mainPos = player.pos.split('/')[0];
+            const mainPos = player.pos.split('/')[0]; // "MF/FW" の場合は "MF" に分類
             if (!groupedPlayers[mainPos]) groupedPlayers[mainPos] = [];
             groupedPlayers[mainPos].push(player);
         });
 
+        // ポジション順にグループを描画
         posOrder.forEach(pos => {
             const playersInPos = groupedPlayers[pos];
             if (!playersInPos || playersInPos.length === 0) return;
@@ -104,6 +126,7 @@ function renderBoard() {
             const posGroup = document.createElement('div');
             posGroup.className = 'pos-group';
 
+            // アコーディオンヘッダー
             const posHeader = document.createElement('div');
             posHeader.className = 'pos-header';
             posHeader.innerHTML = `${pos} <span class="pos-count">(${playersInPos.length} ${i18n.playersCount[currentLang]})</span> <span class="pos-arrow">▼</span>`;
@@ -112,6 +135,7 @@ function renderBoard() {
             const posList = document.createElement('div');
             posList.className = 'pos-list';
 
+            // 選手ごとの行を生成
             playersInPos.forEach(player => {
                 const summaries = i18n.categories.map(cat => ({
                     ...cat,
@@ -122,6 +146,7 @@ function renderBoard() {
                 row.className = 'player-row';
                 row.style.borderLeftColor = team.color;
 
+                // 選手概要（クリックで開閉）
                 const triggerHtml = `
                     <div class="player-trigger" onclick="this.parentElement.classList.toggle('open')">
                         <div class="player-main-info">
@@ -145,12 +170,13 @@ function renderBoard() {
                     </div>
                 `;
 
+                // 詳細スタッツパネル
                 const detailGroupsHtml = i18n.categories.map(cat => {
                     const stats = player.stats[cat.id];
                     const labels = i18n.stats[cat.id];
                     
                     const rowsHtml = labels.map((labelObj, idx) => {
-                        if (stats[idx] === '-') return ''; 
+                        if (stats[idx] === '-') return ''; // 非該当項目は非表示
                         const rankClass = stats[idx] === '-' ? 'rank-none' : `rank-${stats[idx]}`;
                         return `
                         <div class="detail-row">
@@ -181,15 +207,20 @@ function renderBoard() {
     });
 }
 
-// 言語切り替えイベント
-document.getElementById('btn-ja').addEventListener('click', (e) => {
+// -------------------------
+// イベントリスナーの登録
+// -------------------------
+
+// 日本語ボタン
+document.getElementById('btn-ja').addEventListener('click', () => {
     currentLang = 'ja';
     document.getElementById('btn-ja').classList.add('active');
     document.getElementById('btn-en').classList.remove('active');
     renderBoard();
 });
 
-document.getElementById('btn-en').addEventListener('click', (e) => {
+// 英語ボタン
+document.getElementById('btn-en').addEventListener('click', () => {
     currentLang = 'en';
     document.getElementById('btn-en').classList.add('active');
     document.getElementById('btn-ja').classList.remove('active');
