@@ -52,78 +52,79 @@ let scoutingData = [];
 // ==========================================
 // ユーティリティ関数
 // ==========================================
-
-// 多言語対応の保護関数（データが古い形式でもエラーを防ぐ）
 function t(value) {
     if (!value) return '';
     if (typeof value === 'string') return value; 
     return value[currentLang] || value['ja'] || '';
 }
 
-// 平均ランクの計算（「-」は計算から除外）
 function calculateAvgRank(ranksArray) {
     const rankScores = { 'S':8, 'A':7, 'B':6, 'C':5, 'D':4, 'E':3, 'F':2, 'G':1 };
     let sum = 0, count = 0;
-    
     ranksArray.forEach(r => {
-        if (r !== '-') { 
-            sum += (rankScores[r] || 1); 
-            count++; 
-        }
+        if (r !== '-') { sum += (rankScores[r] || 1); count++; }
     });
-    
     if (count === 0) return '-';
-    
     const avg = Math.round(sum / count);
     const reverseScores = { 8:'S', 7:'A', 6:'B', 5:'C', 4:'D', 3:'E', 2:'F', 1:'G' };
     return reverseScores[avg] || 'G';
 }
 
 // ==========================================
-// データの動的読み込み
+// 🌟 爆速データ読み込みロジック
 // ==========================================
 async function loadData() {
-    for (const teamId of possibleTeams) {
-        try {
-            // teams.js のリストに基づいてファイルを動的に読み込む
-            const module = await import(`./data/${teamId}.js`);
+    if (possibleTeams.length === 0) return;
+
+    // 1. 最初の1カ国（リストの先頭）だけを読み込んで即表示！
+    const firstTeamId = possibleTeams[0];
+    try {
+        const module = await import(`./data/${firstTeamId}.js`);
+        const data = Object.values(module)[0];
+        scoutingData.push(data);
+        activeTeamId = data.id;
+        renderBoard(); // ここで画面が表示される（体感0.1秒）
+    } catch (error) {
+        console.warn(`最初のチーム(${firstTeamId})の読み込みに失敗しました。`);
+    }
+
+    // 2. 裏側で残りの国を「並列」で一気に読み込む
+    const remainingTeams = possibleTeams.slice(1);
+    const promises = remainingTeams.map(teamId => 
+        import(`./data/${teamId}.js`).catch(() => null) // 404エラー時はnullを返す
+    );
+
+    // 全ての通信が終わるまで待つ
+    const modules = await Promise.all(promises);
+
+    // 読み込めたデータを配列に追加
+    modules.forEach(module => {
+        if (module) {
             const data = Object.values(module)[0];
             scoutingData.push(data);
-        } catch (error) {
-            // ファイルが存在しない場合（404エラー）は無視して次へ進む
         }
-    }
+    });
 
-    // 読み込めたデータが1つ以上あれば、最初のチームをアクティブにする
-    if (scoutingData.length > 0) {
-        activeTeamId = scoutingData[0].id;
-    }
-
-    // 画面を描画
+    // 3. 全データの読み込みが終わったら、タブを再描画して全カ国選択可能にする
     renderBoard();
 }
 
 // ==========================================
-// 画面の描画ロジック
+// 🌟 画面の描画ロジック（アクティブな国だけHTMLを生成）
 // ==========================================
 function renderBoard() {
-    // タイトルの言語切り替え
     document.getElementById('main-title').textContent = i18n.title[currentLang];
     
     const tabsContainer = document.getElementById('tabs-container');
     const panelsContainer = document.getElementById('panels-container');
     
-    // 再描画のために中身をクリア
     tabsContainer.innerHTML = '';
     panelsContainer.innerHTML = '';
 
-    // ポジションの表示順序
-    const posOrder = ['FW', 'MF', 'DF', 'GK'];
-
+    // -------------------------
+    // 1. タブの生成（全カ国分）
+    // -------------------------
     scoutingData.forEach(team => {
-        // -------------------------
-        // 1. タブの生成
-        // -------------------------
         const btn = document.createElement('button');
         btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
         btn.textContent = t(team.name);
@@ -138,109 +139,108 @@ function renderBoard() {
             renderBoard(); // タブ切り替え時に再描画
         });
         tabsContainer.appendChild(btn);
+    });
 
-        // -------------------------
-        // 2. パネルの生成
-        // -------------------------
-        const panel = document.createElement('div');
-        panel.id = `panel-${team.id}`;
-        panel.className = `team-panel ${team.id === activeTeamId ? 'active' : ''}`;
+    // -------------------------
+    // 2. パネルの生成（★アクティブな1カ国分だけ生成する！）
+    // -------------------------
+    const activeTeam = scoutingData.find(t => t.id === activeTeamId);
+    if (!activeTeam) return;
 
-        // 選手をポジションごとに分類
-        const groupedPlayers = { FW: [], MF: [], DF: [], GK: [] };
-        team.players.forEach(player => {
-            const mainPos = player.pos.split('/')[0]; // "MF/FW" の場合は "MF" に分類
-            if (!groupedPlayers[mainPos]) groupedPlayers[mainPos] = [];
-            groupedPlayers[mainPos].push(player);
-        });
+    const panel = document.createElement('div');
+    panel.id = `panel-${activeTeam.id}`;
+    panel.className = `team-panel active`;
 
-        // ポジション順にグループを描画
-        posOrder.forEach(pos => {
-            const playersInPos = groupedPlayers[pos];
-            if (!playersInPos || playersInPos.length === 0) return;
+    const posOrder = ['FW', 'MF', 'DF', 'GK'];
+    const groupedPlayers = { FW: [], MF: [], DF: [], GK: [] };
+    
+    activeTeam.players.forEach(player => {
+        const mainPos = player.pos.split('/')[0];
+        if (!groupedPlayers[mainPos]) groupedPlayers[mainPos] = [];
+        groupedPlayers[mainPos].push(player);
+    });
 
-            const posGroup = document.createElement('div');
-            posGroup.className = 'pos-group';
+    posOrder.forEach(pos => {
+        const playersInPos = groupedPlayers[pos];
+        if (!playersInPos || playersInPos.length === 0) return;
 
-            // アコーディオンヘッダー
-            const posHeader = document.createElement('div');
-            posHeader.className = 'pos-header';
-            posHeader.innerHTML = `${pos} <span class="pos-count">(${playersInPos.length} ${i18n.playersCount[currentLang]})</span> <span class="pos-arrow">▼</span>`;
-            posHeader.onclick = () => posGroup.classList.toggle('closed');
+        const posGroup = document.createElement('div');
+        posGroup.className = 'pos-group';
 
-            const posList = document.createElement('div');
-            posList.className = 'pos-list';
+        const posHeader = document.createElement('div');
+        posHeader.className = 'pos-header';
+        posHeader.innerHTML = `${pos} <span class="pos-count">(${playersInPos.length} ${i18n.playersCount[currentLang]})</span> <span class="pos-arrow">▼</span>`;
+        posHeader.onclick = () => posGroup.classList.toggle('closed');
 
-            // 選手ごとの行を生成
-            playersInPos.forEach(player => {
-                const summaries = i18n.categories.map(cat => ({
-                    ...cat,
-                    avgRank: calculateAvgRank(player.stats[cat.id])
-                }));
+        const posList = document.createElement('div');
+        posList.className = 'pos-list';
 
-                const row = document.createElement('div');
-                row.className = 'player-row';
-                row.style.borderLeftColor = team.color;
+        playersInPos.forEach(player => {
+            const summaries = i18n.categories.map(cat => ({
+                ...cat,
+                avgRank: calculateAvgRank(player.stats[cat.id])
+            }));
 
-                // 選手概要（クリックで開閉）
-                const triggerHtml = `
-                    <div class="player-trigger" onclick="this.parentElement.classList.toggle('open')">
-                        <div class="player-main-info">
-                            <div class="player-name-line">
-                                <span class="player-name">#${player.no} ${t(player.name)}</span>
-                            </div>
-                            <div class="player-sub-meta">
-                                <span class="meta-club">${t(player.club)}</span>
-                                <span class="meta-specs">${player.age}${i18n.age[currentLang]} / ${player.height}cm / ${player.weight}kg / ${player.pos}</span>
-                            </div>
+            const row = document.createElement('div');
+            row.className = 'player-row';
+            row.style.borderLeftColor = activeTeam.color;
+
+            const triggerHtml = `
+                <div class="player-trigger" onclick="this.parentElement.classList.toggle('open')">
+                    <div class="player-main-info">
+                        <div class="player-name-line">
+                            <span class="player-name">#${player.no} ${t(player.name)}</span>
                         </div>
-                        <div class="summary-mini-grid">
-                            ${summaries.map(s => `
-                                <div class="summary-col">
-                                    <span class="summary-label">${s.short[currentLang]}</span>
-                                    <div class="summary-badge ${s.avgRank === '-' ? 'rank-none' : `rank-${s.avgRank}`}">${s.avgRank}</div>
-                                </div>
-                            `).join('')}
+                        <div class="player-sub-meta">
+                            <span class="meta-club">${t(player.club)}</span>
+                            <span class="meta-specs">${player.age}${i18n.age[currentLang]} / ${player.height}cm / ${player.weight}kg / ${player.pos}</span>
                         </div>
-                        <span class="arrow-icon">▼</span>
                     </div>
-                `;
+                    <div class="summary-mini-grid">
+                        ${summaries.map(s => `
+                            <div class="summary-col">
+                                <span class="summary-label">${s.short[currentLang]}</span>
+                                <div class="summary-badge ${s.avgRank === '-' ? 'rank-none' : `rank-${s.avgRank}`}">${s.avgRank}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <span class="arrow-icon">▼</span>
+                </div>
+            `;
 
-                // 詳細スタッツパネル
-                const detailGroupsHtml = i18n.categories.map(cat => {
-                    const stats = player.stats[cat.id];
-                    const labels = i18n.stats[cat.id];
-                    
-                    const rowsHtml = labels.map((labelObj, idx) => {
-                        if (stats[idx] === '-') return ''; // 非該当項目は非表示
-                        const rankClass = stats[idx] === '-' ? 'rank-none' : `rank-${stats[idx]}`;
-                        return `
-                        <div class="detail-row">
-                            <span class="detail-label">${labelObj[currentLang]}</span>
-                            <span class="rank-badge ${rankClass}">${stats[idx]}</span>
-                        </div>
-                        `;
-                    }).join('');
-
+            const detailGroupsHtml = i18n.categories.map(cat => {
+                const stats = player.stats[cat.id];
+                const labels = i18n.stats[cat.id];
+                
+                const rowsHtml = labels.map((labelObj, idx) => {
+                    if (stats[idx] === '-') return ''; 
+                    const rankClass = stats[idx] === '-' ? 'rank-none' : `rank-${stats[idx]}`;
                     return `
-                        <div class="detail-group">
-                            <div class="group-title ${cat.colorClass}">${cat.name[currentLang]}</div>
-                            ${rowsHtml}
-                        </div>
+                    <div class="detail-row">
+                        <span class="detail-label">${labelObj[currentLang]}</span>
+                        <span class="rank-badge ${rankClass}">${stats[idx]}</span>
+                    </div>
                     `;
                 }).join('');
 
-                row.innerHTML = triggerHtml + `<div class="player-detail-panel"><div class="detail-grid">${detailGroupsHtml}</div></div>`;
-                posList.appendChild(row);
-            });
+                return `
+                    <div class="detail-group">
+                        <div class="group-title ${cat.colorClass}">${cat.name[currentLang]}</div>
+                        ${rowsHtml}
+                    </div>
+                `;
+            }).join('');
 
-            posGroup.appendChild(posHeader);
-            posGroup.appendChild(posList);
-            panel.appendChild(posGroup);
+            row.innerHTML = triggerHtml + `<div class="player-detail-panel"><div class="detail-grid">${detailGroupsHtml}</div></div>`;
+            posList.appendChild(row);
         });
 
-        panelsContainer.appendChild(panel);
+        posGroup.appendChild(posHeader);
+        posGroup.appendChild(posList);
+        panel.appendChild(posGroup);
     });
+
+    panelsContainer.appendChild(panel);
 }
 
 // ==========================================
@@ -251,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnEn = document.getElementById('btn-en');
 
     if (btnJa && btnEn) {
-        // 日本語ボタン
         btnJa.addEventListener('click', () => {
             currentLang = 'ja';
             btnJa.classList.add('active');
@@ -259,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderBoard();
         });
 
-        // 英語ボタン
         btnEn.addEventListener('click', () => {
             currentLang = 'en';
             btnEn.classList.add('active');
@@ -268,6 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 🌟 データの動的読み込みを開始
+    // データの動的読み込みを開始
     loadData();
 });
