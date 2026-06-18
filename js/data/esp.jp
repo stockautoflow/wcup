@@ -1,0 +1,64 @@
+export const espData = {
+    id: 'esp',
+    name: { ja: '🇪🇸 スペイン', en: '🇪🇸 Spain' },
+    color: '#c60b1e', // スペインレッド
+    players: [
+        // ==========================================
+        // GK
+        // ==========================================
+        { 
+            no: 1, name: { ja: "ダビド・ラヤ", en: "David Raya" }, club: { ja: "アーセナル", en: "Arsenal" }, 
+            age: 30, height: 183, weight: 80, pos: "GK", 
+            stats: { atk: ["D","E","E","D","E","B"], def: ["C","C","C","C","A","B"], spd: ["C","C","B","C"], tec: ["B","A","C","E","E","E","E","S"], itl: ["B","B","B","C"], phy: ["B","B","B"] } 
+        },
+        { 
+            no: 13, name: { ja: "ジョアン・ガルシア", en: "Joan García" }, club: { ja: "バルセロナ", en: "Barcelona" }, 
+            age: 25, height: 191, weight: 82, pos: "GK", 
+            stats: { atk: ["E","F","E","D","E","B"], def: ["C","C","C","C","B","A"], spd: ["D","D","C","D"], tec: ["C","B","D","E","E","E","E","B"], itl: ["C","C","C","C"], phy: ["C","B","B"] } 
+        },
+        { 
+            no: 23, name: { ja: "ウナイ・シモン", en: "Unai Simón" }, club: { ja: "アスレティック・ビルバオ", en: "Athletic Bilbao" }, 
+            age: 29, height: 190, weight: 88, pos: "GK", 
+            stats: { atk: ["D","E","E","D","E","B"], def: ["C","C","C","C","A","A"], spd: ["C","C","C","C"], tec: ["C","B","C","E","E","E","E","A"], itl: ["B","B","B","C"], phy: ["B","B","B"] } 
+        },
+
+        // ==========================================
+        // DF
+        // ==========================================
+        { 
+            no: 2, name: { ja: "マルク・プビル", en: "Marc Pubill" }, club: { ja: "アトレティコ・マドリード", en: "Atlético Madrid" }, 
+            age: 22, height: 191, weight: 82, pos: "DF", 
+            stats: { atk: ["C","D","E","B","B","A"], def: ["B","B","B","B","-","-"], spd: ["B","B","C","B"], tec: ["B","B","C","B","B","E","C","-"], itl: ["C","C","B","A"], phy: ["A","A","B"] } 
+        },
+        { 
+            no: 3, name: { ja: "アレハンドロ・グリマルド", en: "Alejandro Grimaldo" }, club: { ja: "レヴァークーゼン", en: "Bayer Leverkusen" }, 
+            age: 30, height: 171, weight: 63, pos: "DF", 
+            stats: { atk: ["B","B","C","E","E","D"], def: ["C","B","C","B","-","-"], spd: ["B","B","A","B"], tec: ["A","S","A","B","A","S","C","-"], itl: ["A","A","B","C"], phy: ["A","C","B"] } 
+        },
+        { 
+            no: 4, name: { ja: "エリック・ガルシア", en: "Eric García" }, club: { ja: "バルセロナ", en: "Barcelona" }, 
+            age: 25, height: 182, weight: 76, pos: "DF", 
+            stats: { atk: ["D","E","E","C","C","C"], def: ["B","A","B","C","-","-"], spd: ["C","C","C","C"], tec: ["S","A","B","D","C","E","D","-"], itl: ["A","B","B","B"], phy: ["B","C","C"] } 
+        },
+        { 
+            no: 5, name: { ja: "マルコス・ジョレンテ", en: "Marcos Llorente" }, club: { ja: "アトレティコ・マドリード", en: "Atlético Madrid" }, 
+            age: 31, height: 184, weight: 74, pos: "DF/MF", 
+            stats: { atk: ["B","B","C","C","C","B"], def: ["B","B","C","S","-","-"], spd: ["S","A","B","S"], tec: ["B","B","B","A","B","D","C","-"], itl: ["A","B","A","C"], phy: ["S","A","A"] } 
+        },
+        { 
+            no: 12, name: { ja: "ペドロ・ポロ", en: "Pedro Porro" }, club: { ja: "トッテナム", en: "Tottenham Hotspur" }, 
+            age: 26, height: 173, weight: 71, pos: "DF", 
+            stats: { atk: ["B","B","C","D","D","C"], def: ["C","B","C","B","-","-"], spd: ["A","A","B","A"], tec: ["A","A","B","A","B","B","C","-"], itl: ["B","B","B","C"], phy: ["A","C","B"] } 
+        },
+        { 
+            no: 14, name: { ja: "アイメリク・ラポルテ", en: "Aymeric Laporte" }, club: { ja: "アスレティック・ビルバオ", en: "Athletic Bilbao" }, 
+            age: 32, height: 191, weight: 85, pos: "DF", 
+            stats: { atk: ["C","D","E","A","A","B"], def: ["A","S","A","C","-","-"], spd: ["D","D","D","D"], tec: ["S","S","B","E","D","E","D","-"], itl: ["S","A","A","A"], phy: ["B","A","C"] } 
+        },
+        { 
+            no: 22, name: { ja: "パウ・クバルシ", en: "Pau Cubarsí" }, club: { ja: "バルセロナ", en: "Barcelona" }, 
+            age: 19, height: 184, weight: 76, pos: "DF", 
+            stats: { atk: ["D","E","E","B","B","B"], def: ["A","S","B","B","-","-"], spd: ["C","C","C","C"], tec: ["S","S","A","D","C","E","D","-"], itl: ["S","S","A","B"], phy: ["B","B","B"] } 
+        },
+        { 
+            no: 24, name: { ja: "マルク・ククレジャ", en: "Marc Cucurella" }, club
