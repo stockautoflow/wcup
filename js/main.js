@@ -1,6 +1,8 @@
-import { teamList } from './data/teams.js';
+import { possibleTeams } from './data/teams.js';
 
+// ==========================================
 // 多言語辞書 (i18n)
+// ==========================================
 const i18n = {
     title: { ja: "W杯2026 スカウティングダッシュボード", en: "World Cup 2026 Scouting Dashboard" },
     age: { ja: "歳", en: "yo" },
@@ -40,19 +42,25 @@ const i18n = {
     }
 };
 
+// ==========================================
 // 状態管理
+// ==========================================
 let currentLang = 'ja';
-let activeTeamId = teamList[0]; // 最初のチームをアクティブに
-let scoutingData = []; // 動的に読み込んだデータを格納する配列
+let activeTeamId = null; 
+let scoutingData = [];
 
-// 保護関数（データが古い形式でもエラーを防ぐ）
+// ==========================================
+// ユーティリティ関数
+// ==========================================
+
+// 多言語対応の保護関数（データが古い形式でもエラーを防ぐ）
 function t(value) {
     if (!value) return '';
     if (typeof value === 'string') return value; 
     return value[currentLang] || value['ja'] || '';
 }
 
-// 平均ランクの計算
+// 平均ランクの計算（「-」は計算から除外）
 function calculateAvgRank(ranksArray) {
     const rankScores = { 'S':8, 'A':7, 'B':6, 'C':5, 'D':4, 'E':3, 'F':2, 'G':1 };
     let sum = 0, count = 0;
@@ -71,37 +79,51 @@ function calculateAvgRank(ranksArray) {
     return reverseScores[avg] || 'G';
 }
 
-// 🌟 動的インポート（Dynamic Import）でデータを読み込む関数
+// ==========================================
+// データの動的読み込み
+// ==========================================
 async function loadData() {
-    for (const teamId of teamList) {
+    for (const teamId of possibleTeams) {
         try {
-            // teams.js に書かれたIDを元に、ファイルを動的に読み込む
+            // teams.js のリストに基づいてファイルを動的に読み込む
             const module = await import(`./data/${teamId}.js`);
-            // モジュールからエクスポートされているオブジェクト（jpnDataなど）を抽出
             const data = Object.values(module)[0];
             scoutingData.push(data);
         } catch (error) {
-            console.error(`[Error] ${teamId}.js の読み込みに失敗しました:`, error);
+            // ファイルが存在しない場合（404エラー）は無視して次へ進む
         }
     }
-    // 全データの読み込みが完了したら画面を描画
+
+    // 読み込めたデータが1つ以上あれば、最初のチームをアクティブにする
+    if (scoutingData.length > 0) {
+        activeTeamId = scoutingData[0].id;
+    }
+
+    // 画面を描画
     renderBoard();
 }
 
+// ==========================================
 // 画面の描画ロジック
+// ==========================================
 function renderBoard() {
+    // タイトルの言語切り替え
     document.getElementById('main-title').textContent = i18n.title[currentLang];
     
     const tabsContainer = document.getElementById('tabs-container');
     const panelsContainer = document.getElementById('panels-container');
     
+    // 再描画のために中身をクリア
     tabsContainer.innerHTML = '';
     panelsContainer.innerHTML = '';
 
+    // ポジションの表示順序
     const posOrder = ['FW', 'MF', 'DF', 'GK'];
 
     scoutingData.forEach(team => {
-        // タブの生成
+        // -------------------------
+        // 1. タブの生成
+        // -------------------------
         const btn = document.createElement('button');
         btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
         btn.textContent = t(team.name);
@@ -113,22 +135,26 @@ function renderBoard() {
         
         btn.addEventListener('click', () => {
             activeTeamId = team.id;
-            renderBoard();
+            renderBoard(); // タブ切り替え時に再描画
         });
         tabsContainer.appendChild(btn);
 
-        // パネルの生成
+        // -------------------------
+        // 2. パネルの生成
+        // -------------------------
         const panel = document.createElement('div');
         panel.id = `panel-${team.id}`;
         panel.className = `team-panel ${team.id === activeTeamId ? 'active' : ''}`;
 
+        // 選手をポジションごとに分類
         const groupedPlayers = { FW: [], MF: [], DF: [], GK: [] };
         team.players.forEach(player => {
-            const mainPos = player.pos.split('/')[0];
+            const mainPos = player.pos.split('/')[0]; // "MF/FW" の場合は "MF" に分類
             if (!groupedPlayers[mainPos]) groupedPlayers[mainPos] = [];
             groupedPlayers[mainPos].push(player);
         });
 
+        // ポジション順にグループを描画
         posOrder.forEach(pos => {
             const playersInPos = groupedPlayers[pos];
             if (!playersInPos || playersInPos.length === 0) return;
@@ -136,6 +162,7 @@ function renderBoard() {
             const posGroup = document.createElement('div');
             posGroup.className = 'pos-group';
 
+            // アコーディオンヘッダー
             const posHeader = document.createElement('div');
             posHeader.className = 'pos-header';
             posHeader.innerHTML = `${pos} <span class="pos-count">(${playersInPos.length} ${i18n.playersCount[currentLang]})</span> <span class="pos-arrow">▼</span>`;
@@ -144,6 +171,7 @@ function renderBoard() {
             const posList = document.createElement('div');
             posList.className = 'pos-list';
 
+            // 選手ごとの行を生成
             playersInPos.forEach(player => {
                 const summaries = i18n.categories.map(cat => ({
                     ...cat,
@@ -154,6 +182,7 @@ function renderBoard() {
                 row.className = 'player-row';
                 row.style.borderLeftColor = team.color;
 
+                // 選手概要（クリックで開閉）
                 const triggerHtml = `
                     <div class="player-trigger" onclick="this.parentElement.classList.toggle('open')">
                         <div class="player-main-info">
@@ -177,12 +206,13 @@ function renderBoard() {
                     </div>
                 `;
 
+                // 詳細スタッツパネル
                 const detailGroupsHtml = i18n.categories.map(cat => {
                     const stats = player.stats[cat.id];
                     const labels = i18n.stats[cat.id];
                     
                     const rowsHtml = labels.map((labelObj, idx) => {
-                        if (stats[idx] === '-') return ''; 
+                        if (stats[idx] === '-') return ''; // 非該当項目は非表示
                         const rankClass = stats[idx] === '-' ? 'rank-none' : `rank-${stats[idx]}`;
                         return `
                         <div class="detail-row">
@@ -213,12 +243,15 @@ function renderBoard() {
     });
 }
 
+// ==========================================
 // イベントリスナーの登録と初期化
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     const btnJa = document.getElementById('btn-ja');
     const btnEn = document.getElementById('btn-en');
 
     if (btnJa && btnEn) {
+        // 日本語ボタン
         btnJa.addEventListener('click', () => {
             currentLang = 'ja';
             btnJa.classList.add('active');
@@ -226,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderBoard();
         });
 
+        // 英語ボタン
         btnEn.addEventListener('click', () => {
             currentLang = 'en';
             btnEn.classList.add('active');
@@ -234,6 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 🌟 初期描画の代わりに、データの動的読み込みを開始する
+    // 🌟 データの動的読み込みを開始
     loadData();
 });
