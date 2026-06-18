@@ -36,18 +36,13 @@ export const marData = {
             stats: { atk: ["C","C","D","D","D","C"], def: ["A","A","B","B","-","-"], spd: ["B","B","B","B"], tec: ["A","A","B","B","A","D","C","-"], itl: ["A","A","B","C"], phy: ["A","B","C"] } 
         },
         { 
-            no: 4, name: { ja: "ソフィアン・アムラバト", en: "Sofyan Amrabat" }, club: { ja: "フェネルバフチェ", en: "Fenerbahçe" }, 
-            age: 29, height: 185, weight: 70, pos: "MF/DF", 
-            stats: { atk: ["C","C","D","C","C","C"], def: ["S","A","B","S","-","-"], spd: ["C","C","C","C"], tec: ["B","A","B","C","C","D","D","-"], itl: ["A","A","S","C"], phy: ["S","S","A"] } 
-        },
-        { 
             no: 5, name: { ja: "ナエフ・アゲルド", en: "Nayef Aguerd" }, club: { ja: "レアル・ソシエダ", en: "Real Sociedad" }, 
             age: 30, height: 190, weight: 76, pos: "DF", 
             stats: { atk: ["C","D","E","A","A","A"], def: ["A","A","A","B","-","-"], spd: ["B","B","C","B"], tec: ["B","A","C","D","C","E","D","-"], itl: ["A","B","B","A"], phy: ["B","A","B"] } 
         },
         { 
             no: 18, name: { ja: "アブデ・エザルズリ", en: "Abde Ezzalzouli" }, club: { ja: "レアル・ベティス", en: "Real Betis" }, 
-            age: 24, height: 177, weight: 73, pos: "FW/DF", 
+            age: 24, height: 177, weight: 73, pos: "DF/FW", 
             stats: { atk: ["B","C","D","E","E","D"], def: ["D","D","E","C","-","-"], spd: ["S","S","S","S"], tec: ["C","C","B","S","A","D","E","-"], itl: ["C","B","B","C"], phy: ["B","C","B"] } 
         },
         { 
@@ -70,14 +65,19 @@ export const marData = {
         // MF
         // ==========================================
         { 
+            no: 4, name: { ja: "ソフィアン・アムラバト", en: "Sofyan Amrabat" }, club: { ja: "フェネルバフチェ", en: "Fenerbahçe" }, 
+            age: 29, height: 185, weight: 70, pos: "MF", 
+            stats: { atk: ["C","C","D","C","C","C"], def: ["S","A","B","S","-","-"], spd: ["C","C","C","C"], tec: ["B","A","B","C","C","D","D","-"], itl: ["A","A","S","C"], phy: ["S","S","A"] } 
+        },
+        { 
             no: 6, name: { ja: "アゼディン・ウナヒ", en: "Azzedine Ounahi" }, club: { ja: "パナシナイコス", en: "Panathinaikos" }, 
             age: 26, height: 182, weight: 73, pos: "MF", 
             stats: { atk: ["B","C","D","E","E","D"], def: ["C","C","D","B","-","-"], spd: ["B","B","A","B"], tec: ["A","A","A","A","A","D","D","-"], itl: ["A","A","B","C"], phy: ["A","C","B"] } 
         },
         { 
-            no: 8, name: { ja: "アゼディン・ウナヒ", en: "Azzedine Ounahi" }, club: { ja: "レアル・ベティス", en: "Real Betis" }, 
-            age: 26, height: 182, weight: 73, pos: "MF", 
-            stats: { atk: ["B","C","D","E","E","D"], def: ["C","C","D","B","-","-"], spd: ["B","B","A","B"], tec: ["A","A","A","A","A","D","D","-"], itl: ["A","A","B","C"], phy: ["A","C","B"] } 
+            no: 8, name: { ja: "イスマエル・サイバリ", en: "Ismael Saibari" }, club: { ja: "PSV", en: "PSV Eindhoven" }, 
+            age: 25, height: 185, weight: 80, pos: "MF", 
+            stats: { atk: ["B","B","C","C","C","C"], def: ["C","C","D","B","-","-"], spd: ["B","B","B","B"], tec: ["B","B","B","A","B","D","D","-"], itl: ["B","B","B","C"], phy: ["A","A","B"] } 
         },
         { 
             no: 10, name: { ja: "アミン・ハリット", en: "Amine Harit" }, club: { ja: "オリンピック・マルセイユ", en: "Olympique de Marseille" }, 
