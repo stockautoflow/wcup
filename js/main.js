@@ -71,25 +71,25 @@ function calculateAvgRank(ranksArray) {
 }
 
 // ==========================================
-// 🌟 爆速データ読み込みロジック
+// 🌟 爆速データ読み込みロジック（初期表示：日本）
 // ==========================================
 async function loadData() {
     if (possibleTeams.length === 0) return;
 
-    // 1. 最初の1カ国（リストの先頭）だけを読み込んで即表示！
-    const firstTeamId = possibleTeams[0];
+    // 1. 最初の1カ国（日本: jpn）だけを読み込んで即表示！
+    const firstTeamId = 'jpn';
     try {
         const module = await import(`./data/${firstTeamId}.js`);
         const data = Object.values(module)[0];
         scoutingData.push(data);
         activeTeamId = data.id;
-        renderBoard(); // ここで画面が表示される（体感0.1秒）
+        renderBoard(); // ここで日本の画面が表示される（体感0.1秒）
     } catch (error) {
-        console.warn(`最初のチーム(${firstTeamId})の読み込みに失敗しました。`);
+        console.warn(`初期チーム(${firstTeamId})の読み込みに失敗しました。`);
     }
 
     // 2. 裏側で残りの国を「並列」で一気に読み込む
-    const remainingTeams = possibleTeams.slice(1);
+    const remainingTeams = possibleTeams.filter(id => id !== firstTeamId);
     const promises = remainingTeams.map(teamId => 
         import(`./data/${teamId}.js`).catch(() => null) // 404エラー時はnullを返す
     );
@@ -103,6 +103,11 @@ async function loadData() {
             const data = Object.values(module)[0];
             scoutingData.push(data);
         }
+    });
+
+    // 🌟 タブの並び順を possibleTeams の順序（FIFAランク順）に合わせる
+    scoutingData.sort((a, b) => {
+        return possibleTeams.indexOf(a.id) - possibleTeams.indexOf(b.id);
     });
 
     // 3. 全データの読み込みが終わったら、タブを再描画して全カ国選択可能にする
