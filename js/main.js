@@ -71,30 +71,17 @@ function calculateAvgRank(ranksArray) {
 }
 
 // ==========================================
-// 🌟 爆速データ読み込みロジック（初期表示：日本）
+// 🌟 爆速データ読み込みロジック（全カ国並列読み込み）
 // ==========================================
 async function loadData() {
     if (possibleTeams.length === 0) return;
 
-    // 1. 最初の1カ国（日本: jpn）だけを読み込んで即表示！
-    const firstTeamId = 'jpn';
-    try {
-        const module = await import(`./data/${firstTeamId}.js`);
-        const data = Object.values(module)[0];
-        scoutingData.push(data);
-        activeTeamId = data.id;
-        renderBoard(); // ここで日本の画面が表示される（体感0.1秒）
-    } catch (error) {
-        console.warn(`初期チーム(${firstTeamId})の読み込みに失敗しました。`);
-    }
-
-    // 2. 裏側で残りの国を「並列」で一気に読み込む
-    const remainingTeams = possibleTeams.filter(id => id !== firstTeamId);
-    const promises = remainingTeams.map(teamId => 
+    // 1. 全カ国を「並列」で一気に読み込む
+    const promises = possibleTeams.map(teamId => 
         import(`./data/${teamId}.js`).catch(() => null) // 404エラー時はnullを返す
     );
 
-    // 全ての通信が終わるまで待つ
+    // 全ての通信が終わるまで待つ（並列なので一瞬で終わります）
     const modules = await Promise.all(promises);
 
     // 読み込めたデータを配列に追加
@@ -105,12 +92,20 @@ async function loadData() {
         }
     });
 
-    // 🌟 タブの並び順を possibleTeams の順序（FIFAランク順）に合わせる
+    // 2. タブの並び順を possibleTeams の順序（FIFAランク順）に合わせる
     scoutingData.sort((a, b) => {
         return possibleTeams.indexOf(a.id) - possibleTeams.indexOf(b.id);
     });
 
-    // 3. 全データの読み込みが終わったら、タブを再描画して全カ国選択可能にする
+    // 3. 初期表示を「日本（jpn）」に設定する
+    const hasJapan = scoutingData.some(t => t.id === 'jpn');
+    if (hasJapan) {
+        activeTeamId = 'jpn';
+    } else if (scoutingData.length > 0) {
+        activeTeamId = scoutingData[0].id;
+    }
+
+    // 4. 全データの準備が整ってから、1回だけ画面を描画する（チラつき防止）
     renderBoard();
 }
 
