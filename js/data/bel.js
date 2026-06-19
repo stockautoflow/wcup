@@ -2,6 +2,15 @@ export const belData = {
     id: 'bel',
     name: { ja: '🇧🇪 ベルギー', en: '🇧🇪 Belgium' },
     color: '#e30613', // ベルギーレッド
+        teamStats: {
+        attributes: { offense: "S", defense: "B", depth: "B", teamwork: "B", intensity: "A", experience: "A" },
+        styles: { 
+            possession: 65, 
+            pressing: 60, 
+            attackRoute: 40, 
+            playStyle: 50 
+        }
+    },
     players: [
         // ==========================================
         // GK

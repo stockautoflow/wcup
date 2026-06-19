@@ -2,6 +2,15 @@ export const jpnData = {
     id: 'jpn',
     name: { ja: '🇯🇵 日本', en: '🇯🇵 Japan' },
     color: '#0f2c59',
+        teamStats: {
+        attributes: { offense: "B", defense: "A", depth: "C", teamwork: "A", intensity: "S", experience: "B" },
+        styles: { 
+            possession: 45, // カウンター(0) ⇔ ポゼッション(100)
+            pressing: 85,   // リトリート(0) ⇔ ハイプレス(100)
+            attackRoute: 30, // サイド(0) ⇔ 中央(100)
+            playStyle: 80    // 個人技(0) ⇔ 組織構築(100)
+        }
+    },
     players: [
         // ==========================================
         // GK
