@@ -1,0 +1,22 @@
+export const jpData = {
+    id: 'jp',
+    name: '🇯🇵 日本',
+    color: '#0f2c59',
+    players: [
+        { no: 9, name: "三笘 薫", club: "ブライトン", age: 29, height: 178, weight: 73, pos: "FW", stats: { atk: ["B","B","C","E","E","D"], def: ["D","C","E","B","-","-"], spd: ["A","S","A","S"], tec: ["C","C","B","S","S","D","E","-"], itl: ["B","A","B","D"], phy: ["B","C","C"] } },
+        { no: 8, name: "久保 建英", club: "レアル・ソシエダ", age: 25, height: 173, weight: 67, pos: "MF/FW", stats: { atk: ["B","A","B","E","E","E"], def: ["D","C","E","C","-","-"], spd: ["B","A","S","A"], tec: ["A","A","S","A","S","A","D","-"], itl: ["A","S","B","C"], phy: ["B","D","D"] } },
+        { no: 22, name: "冨安 健洋", club: "アーセナル", age: 27, height: 188, weight: 84, pos: "DF", stats: { atk: ["D","E","E","A","B","A"], def: ["S","A","A","A","-","-"], spd: ["B","B","C","B"], tec: ["B","B","C","C","C","E","C","-"], itl: ["A","A","A","B"], phy: ["C","A","E"] } },
+        { no: 6, name: "遠藤 航", club: "リヴァプール", age: 33, height: 178, weight: 76, pos: "MF", stats: { atk: ["C","C","D","B","B","B"], def: ["S","A","B","S","-","-"], spd: ["C","C","C","C"], tec: ["B","B","B","D","C","D","D","-"], itl: ["A","A","S","B"], phy: ["A","A","A"] } },
+        { no: 1, name: "鈴木 彩艶", club: "パルマ", age: 23, height: 190, weight: 100, pos: "GK", stats: { atk: ["D","E","E","D","E","A"], def: ["C","C","C","C","B","A"], spd: ["C","C","B","C"], tec: ["C","B","D","E","E","E","E","A"], itl: ["C","C","B","B"], phy: ["B","S","B"] } },
+        { no: 18, name: "上田 綺世", club: "フェイエノールト", age: 27, height: 182, weight: 76, pos: "FW", stats: { atk: ["A","A","A","A","A","A"], def: ["D","D","E","B","-","-"], spd: ["B","B","C","B"], tec: ["C","C","D","C","C","D","E","-"], itl: ["C","B","B","A"], phy: ["B","B","B"] } },
+        { no: 15, name: "町田 浩樹", club: "ユニオンSG", age: 28, height: 190, weight: 80, pos: "DF", stats: { atk: ["D","E","E","A","B","A"], def: ["B","B","B","B","-","-"], spd: ["C","C","D","C"], tec: ["C","B","D","D","D","E","C","-"], itl: ["C","C","B","B"], phy: ["B","A","B"] } },
+        { no: 14, name: "伊東 純也", club: "スタッド・ランス", age: 33, height: 176, weight: 66, pos: "FW", stats: { atk: ["B","C","C","E","E","D"], def: ["D","C","E","B","-","-"], spd: ["A","A","A","S"], tec: ["C","B","C","S","A","C","D","-"], itl: ["C","B","B","C"], phy: ["A","C","A"] } },
+        { no: 10, name: "堂安 律", club: "フライブルク", age: 28, height: 172, weight: 70, pos: "MF", stats: { atk: ["A","B","A","D","D","D"], def: ["C","C","D","A","-","-"], spd: ["B","B","B","B"], tec: ["B","B","B","B","B","B","D","-"], itl: ["B","B","A","C"], phy: ["A","B","B"] } },
+        { no: 5, name: "守田 英正", club: "スポルティングCP", age: 31, height: 177, weight: 74, pos: "MF", stats: { atk: ["C","C","D","C","C","C"], def: ["B","A","B","A","-","-"], spd: ["C","C","C","C"], tec: ["A","A","A","C","B","D","D","-"], itl: ["A","A","A","C"], phy: ["A","B","B"] } },
+        { no: 4, name: "板倉 滉", club: "ボルシアMG", age: 29, height: 186, weight: 75, pos: "DF", stats: { atk: ["C","D","E","B","B","B"], def: ["A","A","A","B","-","-"], spd: ["B","B","C","B"], tec: ["B","B","C","C","C","E","D","-"], itl: ["B","A","A","B"], phy: ["B","B","C"] } },
+        { no: 2, name: "菅原 由勢", club: "サウサンプトン", age: 25, height: 179, weight: 69, pos: "DF", stats: { atk: ["B","C","C","D","D","C"], def: ["C","B","C","B","-","-"], spd: ["B","B","B","B"], tec: ["A","B","B","B","B","A","C","-"], itl: ["B","B","B","C"], phy: ["A","C","B"] } },
+        { no: 13, name: "中村 敬斗", club: "スタッド・ランス", age: 25, height: 180, weight: 75, pos: "FW", stats: { atk: ["A","A","C","D","D","D"], def: ["D","E","F","C","-","-"], spd: ["B","B","B","B"], tec: ["C","C","C","A","A","C","E","-"], itl: ["C","B","B","C"], phy: ["C","C","C"] } },
+        { no: 7, name: "鎌田 大地", club: "クリスタル・パレス", age: 29, height: 184, weight: 76, pos: "MF", stats: { atk: ["B","B","B","D","D","D"], def: ["B","B","C","A","-","-"], spd: ["C","C","C","C"], tec: ["A","A","S","C","B","B","D","-"], itl: ["A","A","A","C"], phy: ["B","C","B"] } },
+        { no: 20, name: "南野 拓実", club: "モナコ", age: 31, height: 174, weight: 68, pos: "MF/FW", stats: { atk: ["A","A","B","D","C","D"], def: ["C","C","E","A","-","-"], spd: ["C","B","B","B"], tec: ["B","C","B","C","B","D","E","-"], itl: ["A","A","B","B"], phy: ["A","C","B"] } }
+    ]
+};
