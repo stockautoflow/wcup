@@ -7,18 +7,13 @@ const i18n = {
     title: { ja: "W杯2026 スカウティングダッシュボード", en: "World Cup 2026 Scouting Dashboard" },
     age: { ja: "歳", en: "yo" },
     playersCount: { ja: "名", en: "players" },
-    
-    // 🌟 チーム評価用テキスト（新規追加）
     teamEval: {
         titleA: { ja: "チーム総合力", en: "Team Attributes" },
         titleB: { ja: "戦術スタイル", en: "Tactical Styles" },
         attr: {
-            offense: { ja: "攻撃力", en: "Offense" },
-            defense: { ja: "守備力", en: "Defense" },
-            depth: { ja: "選手層", en: "Depth" },
-            teamwork: { ja: "組織力", en: "Teamwork" },
-            intensity: { ja: "運動量", en: "Intensity" },
-            experience: { ja: "経験値", en: "Experience" }
+            offense: { ja: "攻撃力", en: "Offense" }, defense: { ja: "守備力", en: "Defense" },
+            depth: { ja: "選手層", en: "Depth" }, teamwork: { ja: "組織力", en: "Teamwork" },
+            intensity: { ja: "運動量", en: "Intensity" }, experience: { ja: "経験値", en: "Experience" }
         },
         style: {
             possession: { left: { ja: "カウンター", en: "Counter" }, right: { ja: "ポゼッション", en: "Possession" } },
@@ -27,7 +22,6 @@ const i18n = {
             playStyle: { left: { ja: "個人技", en: "Individual" }, right: { ja: "組織構築", en: "Teamwork" } }
         }
     },
-
     categories: [
         { id: 'atk', name: { ja: '攻撃', en: 'Attack' }, short: { ja: '攻', en: 'ATK' }, colorClass: 'gt-atk' },
         { id: 'def', name: { ja: '守備', en: 'Defense' }, short: { ja: '守', en: 'DEF' }, colorClass: 'gt-def' },
@@ -94,34 +88,92 @@ function renderBoard() {
     document.getElementById('main-title').textContent = i18n.title[currentLang];
     const tabsContainer = document.getElementById('tabs-container');
     const panelsContainer = document.getElementById('panels-container');
+    
     tabsContainer.innerHTML = '';
     panelsContainer.innerHTML = '';
-
-    scoutingData.forEach(team => {
-        const btn = document.createElement('button');
-        btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
-        btn.textContent = t(team.name);
-        if (team.id === activeTeamId) {
-            btn.style.backgroundColor = team.color;
-            btn.style.color = 'white';
-        }
-        btn.addEventListener('click', () => {
-            activeTeamId = team.id;
-            renderBoard();
-        });
-        tabsContainer.appendChild(btn);
-    });
 
     const activeTeam = scoutingData.find(t => t.id === activeTeamId);
     if (!activeTeam) return;
 
+    // ==========================================
+    // 🌟 1. 国選択トリガーボタンとモーダルの生成
+    // ==========================================
+    const triggerBtn = document.createElement('div');
+    triggerBtn.className = 'team-selector-trigger';
+    triggerBtn.style.backgroundColor = activeTeam.color;
+    triggerBtn.innerHTML = `<span>${t(activeTeam.name)}</span> <span>▼</span>`;
+    tabsContainer.appendChild(triggerBtn);
+
+    // 既存のモーダルがあれば削除（増殖防止）
+    const existingModal = document.getElementById('team-modal');
+    if (existingModal) existingModal.remove();
+
+    const modalOverlay = document.createElement('div');
+    modalOverlay.id = 'team-modal';
+    modalOverlay.className = 'modal-overlay';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'modal-content';
+    
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'modal-header';
+    modalHeader.innerHTML = `<span>${currentLang === 'ja' ? '国を選択' : 'Select Team'}</span> <button class="modal-close">✕</button>`;
+    
+    const modalGrid = document.createElement('div');
+    modalGrid.className = 'modal-team-grid';
+
+    scoutingData.forEach(team => {
+        const btn = document.createElement('button');
+        btn.className = `modal-team-btn ${team.id === activeTeamId ? 'active' : ''}`;
+        btn.textContent = t(team.name);
+        if (team.id === activeTeamId) {
+            btn.style.backgroundColor = team.color;
+            btn.style.borderColor = team.color;
+            btn.style.color = 'white';
+        }
+        
+        btn.addEventListener('click', () => {
+            activeTeamId = team.id;
+            closeModal();
+            setTimeout(renderBoard, 250); // モーダルが閉じるアニメーションを待ってから再描画
+        });
+        modalGrid.appendChild(btn);
+    });
+
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalGrid);
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
+
+    // モーダル開閉ロジック
+    const openModal = () => {
+        modalOverlay.style.display = 'block';
+        modalOverlay.offsetHeight; // リフローを強制してアニメーションを発火
+        modalOverlay.classList.add('show');
+        document.body.style.overflow = 'hidden'; // 背景のスクロールを防止
+    };
+    
+    const closeModal = () => {
+        modalOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            modalOverlay.style.display = 'none';
+        }, 300);
+    };
+
+    triggerBtn.addEventListener('click', openModal);
+    modalHeader.querySelector('.modal-close').addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
+    });
+
+    // ==========================================
+    // 🌟 2. チーム総合評価パネルの生成
+    // ==========================================
     const panel = document.createElement('div');
     panel.id = `panel-${activeTeam.id}`;
     panel.className = `team-panel active`;
 
-    // ==========================================
-    // 🌟 国（チーム）の総合評価パネルを生成
-    // ==========================================
     const tStats = activeTeam.teamStats || {
         attributes: { offense: "-", defense: "-", depth: "-", teamwork: "-", intensity: "-", experience: "-" },
         styles: { possession: 50, pressing: 50, attackRoute: 50, playStyle: 50 }
@@ -163,7 +215,7 @@ function renderBoard() {
     panel.innerHTML = teamSummaryHtml;
 
     // ==========================================
-    // 以降、選手リストの生成（変更なし）
+    // 🌟 3. 選手リストの生成
     // ==========================================
     const posOrder = ['FW', 'MF', 'DF', 'GK'];
     const groupedPlayers = { FW: [], MF: [], DF: [], GK: [] };
