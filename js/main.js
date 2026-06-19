@@ -129,15 +129,24 @@ function renderBoard() {
         btn.className = `tab-btn ${team.id === activeTeamId ? 'active' : ''}`;
         btn.textContent = t(team.name);
         
-        if (team.id === activeTeamId) {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.backgroundColor = '#cbd5e1';
+                b.style.color = '#334155';
+            });
+            document.querySelectorAll('.team-panel').forEach(p => p.classList.remove('active'));
+            
+            btn.classList.add('active');
+            btn.style.backgroundColor = team.color;
+            btn.style.color = 'white';
+            document.getElementById(`panel-${team.id}`).classList.add('active');
+        });
+        
+        if(tIndex === 0) {
             btn.style.backgroundColor = team.color;
             btn.style.color = 'white';
         }
-        
-        btn.addEventListener('click', () => {
-            activeTeamId = team.id;
-            renderBoard(); // タブ切り替え時に再描画
-        });
         tabsContainer.appendChild(btn);
     });
 
