@@ -2,6 +2,10 @@ export const engData = {
     id: 'eng',
     name: { ja: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 イングランド', en: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 England' },
     color: '#cf081f', // イングランドレッド
+    teamStats: {
+        attributes: { offense: "S", defense: "S", depth: "S", teamwork: "B", intensity: "A", experience: "A" },
+        styles: { possession: 60, pressing: 60, attackRoute: 50, playStyle: 40 }
+    },
     players: [
         // ==========================================
         // GK

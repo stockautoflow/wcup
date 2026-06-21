@@ -2,6 +2,10 @@ export const sweData = {
     id: 'swe',
     name: { ja: '🇸🇪 スウェーデン', en: '🇸🇪 Sweden' },
     color: '#005b99',
+    teamStats: {
+        attributes: { offense: "A", defense: "B", depth: "C", teamwork: "B", intensity: "B", experience: "C" },
+        styles: { possession: 45, pressing: 50, attackRoute: 40, playStyle: 50 }
+    },
     players: [
         // ==========================================
         // GK

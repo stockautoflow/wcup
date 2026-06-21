@@ -2,6 +2,10 @@ export const marData = {
     id: 'mar',
     name: { ja: '🇲🇦 モロッコ', en: '🇲🇦 Morocco' },
     color: '#c1272d', // モロッコレッド
+    teamStats: {
+        attributes: { offense: "B", defense: "A", depth: "B", teamwork: "A", intensity: "S", experience: "B" },
+        styles: { possession: 40, pressing: 45, attackRoute: 30, playStyle: 60 }
+    },
     players: [
         // ==========================================
         // GK

@@ -2,6 +2,10 @@ export const nldData = {
     id: 'nld',
     name: { ja: '🇳🇱 オランダ', en: '🇳🇱 Netherlands' },
     color: '#f97316',
+    teamStats: {
+        attributes: { offense: "A", defense: "S", depth: "B", teamwork: "A", intensity: "B", experience: "A" },
+        styles: { possession: 60, pressing: 55, attackRoute: 40, playStyle: 70 }
+    },
     players: [
         // ==========================================
         // GK

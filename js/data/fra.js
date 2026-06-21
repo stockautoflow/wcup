@@ -2,6 +2,10 @@ export const fraData = {
     id: 'fra',
     name: { ja: '🇫🇷 フランス', en: '🇫🇷 France' },
     color: '#002395', // フランスブルー
+    teamStats: {
+        attributes: { offense: "S", defense: "S", depth: "S", teamwork: "B", intensity: "A", experience: "S" },
+        styles: { possession: 45, pressing: 40, attackRoute: 30, playStyle: 20 }
+    },
     players: [
         // ==========================================
         // GK

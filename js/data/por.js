@@ -2,6 +2,10 @@ export const porData = {
     id: 'por',
     name: { ja: '🇵🇹 ポルトガル', en: '🇵🇹 Portugal' },
     color: '#e42518', // ポルトガルレッド
+    teamStats: {
+        attributes: { offense: "S", defense: "A", depth: "A", teamwork: "B", intensity: "B", experience: "A" },
+        styles: { possession: 65, pressing: 55, attackRoute: 45, playStyle: 45 }
+    },
     players: [
         // ==========================================
         // GK

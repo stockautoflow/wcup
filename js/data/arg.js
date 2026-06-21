@@ -2,6 +2,10 @@ export const argData = {
     id: 'arg',
     name: { ja: '🇦🇷 アルゼンチン', en: '🇦🇷 Argentina' },
     color: '#43a1d5', // アルゼンチンブルー
+    teamStats: {
+        attributes: { offense: "S", defense: "S", depth: "A", teamwork: "S", intensity: "A", experience: "S" },
+        styles: { possession: 60, pressing: 65, attackRoute: 70, playStyle: 60 }
+    },
     players: [
         // ==========================================
         // GK

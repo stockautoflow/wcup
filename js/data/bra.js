@@ -2,6 +2,10 @@ export const braData = {
     id: 'bra',
     name: { ja: '🇧🇷 ブラジル', en: '🇧🇷 Brazil' },
     color: '#009b3a', // ブラジルグリーン（白文字が見やすいように調整）
+    teamStats: {
+        attributes: { offense: "S", defense: "A", depth: "A", teamwork: "C", intensity: "B", experience: "A" },
+        styles: { possession: 55, pressing: 50, attackRoute: 35, playStyle: 20 }
+    },
     players: [
         // ==========================================
         // GK

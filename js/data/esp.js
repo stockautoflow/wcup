@@ -2,6 +2,10 @@ export const espData = {
     id: 'esp',
     name: { ja: '🇪🇸 スペイン', en: '🇪🇸 Spain' },
     color: '#c60b1e', // スペインレッド
+    teamStats: {
+        attributes: { offense: "A", defense: "A", depth: "A", teamwork: "S", intensity: "B", experience: "A" },
+        styles: { possession: 85, pressing: 75, attackRoute: 40, playStyle: 80 }
+    },
     players: [
         // ==========================================
         // GK
