@@ -43,7 +43,23 @@ h1 {
 }
 
 /* --- 以下、前回のCSSと同じ --- */
-:root { --bg-main: #f1f5f9; --panel-bg: #ffffff; --text-main: #0f172a; --text-muted: #64748b; --r-s: #ec4899; --r-a: #ef4444; --r-b: #f97316; --r-c: #f59e0b; --r-d: #10b981; --r-e: #3b82f6; --r-f: #8b5cf6; --r-g: #64748b; --r-none: #e2e8f0; }
+:root {
+            --bg-main: #f1f5f9;
+            --panel-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            
+            /* 改善案1：Cを黄緑にして区別を明確に */
+            --r-s: #ec4899; /* ピンク */
+            --r-a: #ef4444; /* 赤 */
+            --r-b: #f97316; /* 橙 */
+            --r-c: #84cc16; /* 黄緑（ライム） */
+            --r-d: #10b981; /* 緑（エメラルド） */
+            --r-e: #3b82f6; /* 青 */
+            --r-f: #8b5cf6; /* 紫 */
+            --r-g: #64748b; /* 灰 */
+            --r-none: #e2e8f0; /* 非該当 */
+        }
 *, *::before, *::after { box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; padding: 12px; -webkit-text-size-adjust: 100%; }
 .container { max-width: 800px; margin: 0 auto; }
